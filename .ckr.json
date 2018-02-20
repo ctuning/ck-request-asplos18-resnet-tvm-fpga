@@ -1,10 +1,10 @@
 {
-  "data_uoa": "ck-request-asplos18-mxnet-fpga",
+  "data_uoa": "ck-request-asplos18-resnet-tvm-fpga",
   "data_uid": "a1294586bce671ba",
-  "data_alias": "ck-request-asplos18-mxnet-fpga",
-  "data_name": "ck-request-asplos18-mxnet-fpga",
+  "data_alias": "ck-request-asplos18-resnet-tvm-fpga",
+  "data_name": "ck-request-asplos18-resnet-tvm-fpga",
   "dict": {
     "shared": "git",
-    "url": "https://github.com/ctuning/ck-request-asplos18-mxnet-fpga"
+    "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"
   }
 }
