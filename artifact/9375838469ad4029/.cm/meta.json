@@ -1,0 +1,16 @@
+{
+  "acm_badges":{
+    "available":"",
+    "functional":"",
+    "reusable":"",
+    "replicated":"",
+    "reproduced":""
+  },
+  "dois": [
+  ],
+  "html":"",
+  "repos": [
+    {"name":"CK workflow", "url":"https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"},
+    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga"}
+  ]
+}
