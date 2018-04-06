@@ -5,6 +5,15 @@
   "data_name": "ck-request-asplos18-resnet-tvm-fpga",
   "dict": {
     "shared": "git",
-    "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"
+    "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga",
+    "repo_deps": [
+      {
+        "repo_uoa": "ck-mxnet"
+      },
+      {
+        "repo_uoa": "ck-request"
+      }
+    ],
+    "recache": "yes"
   }
 }
