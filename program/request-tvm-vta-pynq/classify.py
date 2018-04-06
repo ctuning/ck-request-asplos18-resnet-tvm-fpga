@@ -11,6 +11,7 @@ import json
 import logging
 import wget
 from tvm.contrib import graph_runtime, rpc, util
+import sys #FGG
 
 factor = 16
 host = "cknowledge.ddns.net"
@@ -19,14 +20,18 @@ verbose = False
 # only run fpga component, mark non-conv ops as nop
 debug_fpga_only = False
 
+argv=sys.argv
+
+TEST_FILE=argv[1]
+
 # Obtain model and hardware files (they're too large to check-in)
 url = "https://homes.cs.washington.edu/~moreau/media/vta/"
-TEST_FILE = 'cat.jpg'
+#TEST_FILE = 'cat.jpg'
 CATEG_FILE = 'synset.txt'
 RESNET_GRAPH_FILE = 'quantize_graph.json'
 RESNET_PARAMS_FILE = 'quantize_params.pkl'
 BITSTREAM_FILE = 'vta.bit'
-for file in [TEST_FILE, CATEG_FILE, RESNET_GRAPH_FILE, RESNET_PARAMS_FILE, BITSTREAM_FILE]:
+for file in [CATEG_FILE, RESNET_GRAPH_FILE, RESNET_PARAMS_FILE, BITSTREAM_FILE]:
     if not os.path.isfile(file):
         print ("Downloading {}".format(file))
         wget.download(url+file) 
