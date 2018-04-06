@@ -1,0 +1,21 @@
+{
+  "auto_detect": "yes", 
+  "customize": {
+    "check_that_exists": "yes", 
+    "ck_version": 10, 
+    "env_prefix": "CK_ENV_LIB_VTA_PYTHON", 
+    "limit_recursion_dir_search": {
+      "linux": 5, 
+      "win": 5
+    }, 
+    "soft_file": {
+      "linux": "vta/__init__.py", 
+      "win": "vta\\__init__.py"
+    }
+  }, 
+  "soft_name": "VTA python library", 
+  "tags": [
+    "lib", 
+    "vta-python"
+  ]
+}
