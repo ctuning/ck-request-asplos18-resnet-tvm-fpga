@@ -1,0 +1,19 @@
+{
+  "auto_detect": "yes", 
+  "customize": {
+    "check_that_exists": "yes", 
+    "ck_version": 10, 
+    "env_prefix": "CK_ENV_LIB_PYNQ_DMA", 
+    "limit_recursion_dir_search": {
+      "linux": 4 
+    }, 
+    "soft_file": {
+      "linux": "libdma.so"
+    }
+  }, 
+  "soft_name": "PYNQ DMA library", 
+  "tags": [
+    "lib", 
+    "pynq-dma"
+  ]
+}
