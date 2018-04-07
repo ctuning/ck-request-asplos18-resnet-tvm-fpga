@@ -14,8 +14,14 @@ from tvm.contrib import graph_runtime, rpc, util
 import sys #FGG
 
 factor = 16
-host = "cknowledge.ddns.net"
-port = 9091
+
+host = os.environ.get('CK_MACHINE_HOST','')
+if host=='': host = "192.168.2.99"
+
+port = os.environ.get('CK_MACHINE_PORT','')
+if port=='': port = 9091
+port=int(port)
+
 verbose = False
 # only run fpga component, mark non-conv ops as nop
 debug_fpga_only = False
