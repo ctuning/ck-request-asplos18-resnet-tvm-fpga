@@ -20,28 +20,34 @@ verbose = False
 # only run fpga component, mark non-conv ops as nop
 debug_fpga_only = False
 
+# FGG: get file to classify from CMD
 argv=sys.argv
-
 TEST_FILE=argv[1]
 
-# Obtain model and hardware files (they're too large to check-in)
-url = "https://homes.cs.washington.edu/~moreau/media/vta/"
-#TEST_FILE = 'cat.jpg'
-CATEG_FILE = 'synset.txt'
-RESNET_GRAPH_FILE = 'quantize_graph.json'
-RESNET_PARAMS_FILE = 'quantize_params.pkl'
-BITSTREAM_FILE = 'vta.bit'
-for file in [CATEG_FILE, RESNET_GRAPH_FILE, RESNET_PARAMS_FILE, BITSTREAM_FILE]:
-    if not os.path.isfile(file):
-        print ("Downloading {}".format(file))
-        wget.download(url+file) 
+# FGG: set timers
+import time
+timers={}
+
+# FGG: set model files via CK env
+CATEG_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_LABELS_FULL'] # 'synset.txt'
+RESNET_GRAPH_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_FULL'] # 'quantize_graph.json'
+RESNET_PARAMS_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_WEIGHTS_FULL'] # 'quantize_params.pkl'
+BITSTREAM_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_BIT_FULL'] #' vta.bit'
+BITSTREAM_FILENAME = os.environ['CK_ENV_MODEL_VTA_MODEL_BIT'] #' vta.bit'
+
+STAT_REPEAT=os.environ.get('STAT_REPEAT','')
+if STAT_REPEAT=='' or STAT_REPEAT==None:
+   STAT_REPEAT=10
+STAT_REPEAT=int(STAT_REPEAT)
 
 # Program the FPGA remotely
+dt=time.time()
 assert tvm.module.enabled("rpc")
 remote = rpc.connect(host, port)
-remote.upload(BITSTREAM_FILE, BITSTREAM_FILE)
+remote.upload(BITSTREAM_FILE, BITSTREAM_FILENAME)
 fprogram = remote.get_function("tvm.contrib.vta.init")
-fprogram(BITSTREAM_FILE)
+fprogram(BITSTREAM_FILENAME)
+timers['execution_time_upload_bitstream']=time.time()-dt
 
 if verbose:
     logging.basicConfig(level=logging.INFO)
@@ -49,8 +55,10 @@ if verbose:
 # Change to -device=tcpu to run cpu only inference.
 target = "llvm -device=vta"
 
+dt=time.time()
 synset = eval(open(os.path.join(CATEG_FILE)).read())
 image = Image.open(os.path.join(TEST_FILE)).resize((224, 224))
+timers['execution_time_load_image']=time.time()-dt
 
 def transform_image(image):
     image = np.array(image) - np.array([123., 117., 104.])
@@ -89,7 +97,9 @@ def mark_nop(graph, conv_layer=-1, skip_conv_layer=()):
     graph = nnvm.graph.load_json(json.dumps(jgraph))
     return graph
 
+dt=time.time()
 x = transform_image(image)
+timers['execution_time_transform_image']=time.time()-dt
 print('x', x.shape)
 
 ######################################################################
@@ -101,6 +111,7 @@ sym = nnvm.graph.load_json(
 params = pickle.load(
     open(os.path.join(RESNET_PARAMS_FILE)))
 
+dt=time.time()
 shape_dict = {"data": x.shape}
 dtype_dict = {"data": 'float32'}
 shape_dict.update({k: v.shape for k, v in params.items()})
@@ -122,6 +133,7 @@ graph_attr.set_shape_inputs(sym, shape_dict)
 sym = sym.apply("InferShape")
 graph_attr.set_dtype_inputs(sym, dtype_dict)
 sym = sym.apply("InferType")
+timers['execution_time_prepare_graph']=time.time()-dt
 
 with nnvm.compiler.build_config(opt_level=3):
     bdict = {}
@@ -134,10 +146,13 @@ with nnvm.compiler.build_config(opt_level=3):
             sym, target, shape_dict, dtype_dict,
             params=params)
 
+print ("connecting ...")
+dt=time.time()
 remote = rpc.connect(host, port)
 temp = util.tempdir()
 lib.save(temp.relpath("graphlib.o"))
 remote.upload(temp.relpath("graphlib.o"))
+timers['execution_time_upload_graph']=time.time()-dt
 lib = remote.load_module("graphlib.o")
 ctx = remote.ext_dev(0) if "vta" in target else remote.cpu(0)
 
@@ -148,13 +163,19 @@ def run_e2e(graph):
     """
     if debug_fpga_only:
         graph = mark_nop(graph, skip_conv_layer=(0,))
+    dt=time.time()
     m = graph_runtime.create(graph, lib, ctx)
+    timers['execution_time_create_run_time_graph']=(time.time()-dt)
     # set inputs
     m.set_input('data', tvm.nd.array(x.astype("float32")))
     m.set_input(**params)
     # execute
-    timer = m.module.time_evaluator("run", ctx, number=10)
+    print ("run ("+str(STAT_REPEAT)+")")
+    dt=time.time()
+    timer = m.module.time_evaluator("run", ctx, number=STAT_REPEAT)
+    timers['execution_time_classify']=(time.time()-dt)/STAT_REPEAT
     tcost = timer()
+
     # get outputs
     tvm_output = m.get_output(
         0,tvm.nd.empty((1000,), dtype, remote.cpu(0)))
@@ -162,6 +183,12 @@ def run_e2e(graph):
     print('TVM prediction top-1:', top1, synset[top1])
     print("t-cost=%g" % tcost.mean)
 
+    timers['execution_time_classify_internal']=tcost.mean
+    timers['execution_time']=tcost.mean
+
+    import json
+    with open ('tmp-ck-timer.json', 'w') as ftimers:
+         json.dump(timers, ftimers)
 
 def run_layer(old_graph):
     """Run a certain layer."""

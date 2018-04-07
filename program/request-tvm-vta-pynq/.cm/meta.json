@@ -31,14 +31,30 @@
           "name": "NNVM library", 
           "sort": 30, 
           "tags": "lib,nnvm"
+        },
+        "model-vta": {
+          "local": "yes", 
+          "name": "NNVM library", 
+          "sort": 30, 
+          "tags": "lib,nnvm"
+        },
+        "model": {
+          "force_target_as_host": "yes", 
+          "local": "yes", 
+          "name": "VTA model (net and weights)", 
+          "sort": 50, 
+          "tags": "vtamodel"
         }
       }, 
       "run_time": {
+        "fine_grain_timer_file": "tmp-ck-timer.json", 
         "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../classify.py $#dataset_path#$$#dataset_filename#$"
       }
     } 
   }, 
-  "run_vars": {}, 
+  "run_vars": {
+    "STAT_REPEAT":5
+  }, 
   "tags": [
     "tvm-fpga-demo", 
     "request",
