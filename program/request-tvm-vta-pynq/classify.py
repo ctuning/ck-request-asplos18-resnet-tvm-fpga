@@ -188,7 +188,7 @@ def run_e2e(graph):
 
     import json
     with open ('tmp-ck-timer.json', 'w') as ftimers:
-         json.dump(timers, ftimers)
+         json.dump(timers, ftimers, indent=2)
 
 def run_layer(old_graph):
     """Run a certain layer."""
