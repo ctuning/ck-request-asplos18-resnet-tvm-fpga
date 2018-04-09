@@ -26,9 +26,48 @@ verbose = False
 # only run fpga component, mark non-conv ops as nop
 debug_fpga_only = False
 
-# FGG: get file to classify from CMD
+STAT_REPEAT=os.environ.get('STAT_REPEAT','')
+if STAT_REPEAT=='' or STAT_REPEAT==None:
+   STAT_REPEAT=10
+STAT_REPEAT=int(STAT_REPEAT)
+
+# FGG: get file to classify from CMD (or check all images from ImageNet is empty)
+files=[]
 argv=sys.argv
-TEST_FILE=argv[1]
+
+val={}
+if len(argv)>1:
+   files=[argv[1]]
+else:
+   ipath=os.environ.get('CK_ENV_DATASET_IMAGENET_VAL','')
+   if ipath=='':
+      print ('Error: path to ImageNet dataset is not set!')
+      exit(1)
+   if not os.path.isdir(ipath):
+      print ('Error: path to ImageNet dataset was not found!')
+      exit(1)
+
+   # get all files
+   d=os.listdir(ipath)
+   for x in d:
+       x1=x.lower()
+       if x1.startswith('ilsvrc2012_val_'):
+          files.append(os.path.join(ipath,x))
+
+   files=sorted(files)
+
+   STAT_REPEAT=1
+
+   # Get correct labels
+   ival=os.environ.get('CK_CAFFE_IMAGENET_VAL_TXT','')
+   fval=open(ival).read().split('\n')
+
+   val={}
+   for x in fval:
+       x=x.strip()
+       if x!='':
+          y=x.split(' ')
+          val[y[0]]=int(y[1])
 
 # FGG: set timers
 import time
@@ -40,11 +79,6 @@ RESNET_GRAPH_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_FULL'] # 'quantize_graph.
 RESNET_PARAMS_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_WEIGHTS_FULL'] # 'quantize_params.pkl'
 BITSTREAM_FILE = os.environ['CK_ENV_MODEL_VTA_MODEL_BIT_FULL'] #' vta.bit'
 BITSTREAM_FILENAME = os.environ['CK_ENV_MODEL_VTA_MODEL_BIT'] #' vta.bit'
-
-STAT_REPEAT=os.environ.get('STAT_REPEAT','')
-if STAT_REPEAT=='' or STAT_REPEAT==None:
-   STAT_REPEAT=10
-STAT_REPEAT=int(STAT_REPEAT)
 
 # Program the FPGA remotely
 dt=time.time()
@@ -61,10 +95,7 @@ if verbose:
 # Change to -device=tcpu to run cpu only inference.
 target = "llvm -device=vta"
 
-dt=time.time()
 synset = eval(open(os.path.join(CATEG_FILE)).read())
-image = Image.open(os.path.join(TEST_FILE)).resize((224, 224))
-timers['execution_time_load_image']=time.time()-dt
 
 def transform_image(image):
     image = np.array(image) - np.array([123., 117., 104.])
@@ -103,10 +134,15 @@ def mark_nop(graph, conv_layer=-1, skip_conv_layer=()):
     graph = nnvm.graph.load_json(json.dumps(jgraph))
     return graph
 
+# Get first shape (expect that will be the same for all)
+
 dt=time.time()
-x = transform_image(image)
+image = Image.open(os.path.join(files[0])).resize((224, 224))
+timers['execution_time_load_image']=time.time()-dt
+
+dt=time.time()
+img = transform_image(image)
 timers['execution_time_transform_image']=time.time()-dt
-print('x', x.shape)
 
 ######################################################################
 # now compile the graph
@@ -118,7 +154,7 @@ params = pickle.load(
     open(os.path.join(RESNET_PARAMS_FILE)))
 
 dt=time.time()
-shape_dict = {"data": x.shape}
+shape_dict = {"data": img.shape}
 dtype_dict = {"data": 'float32'}
 shape_dict.update({k: v.shape for k, v in params.items()})
 dtype_dict.update({k: str(v.dtype) for k, v in params.items()})
@@ -167,34 +203,80 @@ print("Build complete...")
 def run_e2e(graph):
     """Running end to end example
     """
+
+    import json
+
     if debug_fpga_only:
         graph = mark_nop(graph, skip_conv_layer=(0,))
     dt=time.time()
     m = graph_runtime.create(graph, lib, ctx)
     timers['execution_time_create_run_time_graph']=(time.time()-dt)
-    # set inputs
-    m.set_input('data', tvm.nd.array(x.astype("float32")))
-    m.set_input(**params)
-    # execute
-    print ("run ("+str(STAT_REPEAT)+")")
-    dt=time.time()
-    timer = m.module.time_evaluator("run", ctx, number=STAT_REPEAT)
-    timers['execution_time_classify']=(time.time()-dt)/STAT_REPEAT
-    tcost = timer()
 
-    # get outputs
-    tvm_output = m.get_output(
-        0,tvm.nd.empty((1000,), dtype, remote.cpu(0)))
-    top1 = np.argmax(tvm_output.asnumpy())
-    print('TVM prediction top-1:', top1, synset[top1])
-    print("t-cost=%g" % tcost.mean)
+    total_images=0
+    correct_images=0
 
-    timers['execution_time_classify_internal']=tcost.mean
-    timers['execution_time']=tcost.mean
+    dt1=time.time()
+    for f in files:
+        total_images+=1
 
-    import json
-    with open ('tmp-ck-timer.json', 'w') as ftimers:
-         json.dump(timers, ftimers, indent=2)
+        print ('===============================================================================')
+        print ('Image '+str(total_images)+' of '+str(len(files))+' : '+f)
+
+        image = Image.open(os.path.join(f)).resize((224, 224))
+        img = transform_image(image)
+
+        # set inputs
+        m.set_input('data', tvm.nd.array(img.astype("float32")))
+        m.set_input(**params)
+
+        # execute
+        print ('')
+        print ("run ("+str(STAT_REPEAT)+" statistical repetitions)")
+        dt=time.time()
+        timer = m.module.time_evaluator("run", ctx, number=STAT_REPEAT)
+        timers['execution_time_classify']=(time.time()-dt)/STAT_REPEAT
+        tcost = timer()
+
+        # get outputs
+        tvm_output = m.get_output(
+            0,tvm.nd.empty((1000,), dtype, remote.cpu(0)))
+
+        top1 = np.argmax(tvm_output.asnumpy())
+
+        print ('')
+        print('TVM prediction top-1:', top1, synset[top1])
+        print("t-cost=%g" % tcost.mean)
+
+        # Check correctness if available
+        if len(val)>0:
+           correct=False
+           top=val[os.path.basename(f)]
+           if top==top1:
+              correct=True
+              correct_images+=1
+
+           print ('')
+           if correct:
+              print ('Current prediction: CORRECT')
+           else:
+              print ('Current prediction: INCORRECT +('+str(top)+')')
+
+           accuracy_top1=float(correct_images)/float(total_images)
+           print ('Current accuracy:   '+('%.5f'%accuracy_top1))
+
+           print ('')
+           print ('Total elapsed time: '+('%.1f'%(time.time()-dt1))+' sec.')
+
+           timers['total_images']=total_images
+           timers['correct_images_top1']=correct_images
+           timers['accuracy_top1']=accuracy_top1
+
+        timers['execution_time_classify_internal']=tcost.mean
+        timers['execution_time']=tcost.mean
+
+
+        with open ('tmp-ck-timer.json', 'w') as ftimers:
+             json.dump(timers, ftimers, indent=2)
 
 def run_layer(old_graph):
     """Run a certain layer."""

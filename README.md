@@ -90,7 +90,6 @@ Note that by default this server will run on host '192.168.2.99' and port '9091'
 Now you can configure your host machine to classify images via this board.
 
 
-
 ## Installation: host machine (tested on Ubuntu or similar)
 
 Install missing deps:
@@ -116,4 +115,26 @@ $ ck install package:lib-tvm-master-cpu --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3
 $ ck install package:lib-nnvm-master --env.PACKAGE_URL=https://github.com/tqchen/nnvm --env.PACKAGE_GIT_CHECKOUT=qt
 
 $ ck install package:lib-vta-python-master
+```
+
+### Set up RPC access to VTA server
+```
+$ ck add machine:pynq
+```
+
+Select "remote machine accessed via RPC", then enter hostname and port.
+
+You can then check if VTA server running as following:
+```
+$ ck show machine
+```
+
+You can now try to classify some image via VTA server as following:
+```
+$ ck run program:request-tvm-vta-pynq --cmd=classify --target=pynq
+```
+
+Finally, you can test accuracy on IMAGENET as following:
+```
+$ ck run program:request-tvm-vta-pynq --cmd=test target=pynq
 ```
