@@ -147,6 +147,7 @@ def get_top5(all_probs):
 
 dt=time.time()
 image = Image.open(os.path.join(files[0])).resize((224, 224))
+if image.mode!='RGB': image=image.convert('RGB')
 timers['execution_time_load_image']=time.time()-dt
 
 dt=time.time()
@@ -225,6 +226,22 @@ def run_e2e(graph):
     correct_images_top1=0
     correct_images_top5=0
 
+    # Shuffle files and pre-read JSON with accuracy to continue aggregating it
+    # otherwise if FPGA board hangs, we can continue checking random images ...
+
+    import random
+    random.shuffle(files)
+
+    if os.path.isfile('aggregate-ck-timer.json'):
+       x=json.load(open('aggregate-ck-timer.json'))
+
+       if 'total_images' in x:
+          total_images=x['total_images']
+       if 'correct_images_top1' in x:
+          correct_images_top1=x['correct_images_top1']
+       if 'correct_images_top5' in x:
+          correct_images_top5=x['correct_images_top5']
+
     dt1=time.time()
     for f in files:
         total_images+=1
@@ -233,6 +250,7 @@ def run_e2e(graph):
         print ('Image '+str(total_images)+' of '+str(len(files))+' : '+f)
 
         image = Image.open(os.path.join(f)).resize((224, 224))
+        if image.mode!='RGB': image=image.convert('RGB')
         img = transform_image(image)
 
         # set inputs
@@ -314,8 +332,10 @@ def run_e2e(graph):
         timers['execution_time_classify_internal']=tcost.mean
         timers['execution_time']=tcost.mean
 
-
         with open ('tmp-ck-timer.json', 'w') as ftimers:
+             json.dump(timers, ftimers, indent=2)
+
+        with open ('aggregate-ck-timer.json', 'w') as ftimers:
              json.dump(timers, ftimers, indent=2)
 
         sys.stdout.flush()
