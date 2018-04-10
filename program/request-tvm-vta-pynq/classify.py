@@ -134,6 +134,15 @@ def mark_nop(graph, conv_layer=-1, skip_conv_layer=()):
     graph = nnvm.graph.load_json(json.dumps(jgraph))
     return graph
 
+# returns list of pairs (prob, class_index)
+def get_top5(all_probs):
+  probs_with_classes = []
+  for class_index in range(len(all_probs)):
+    prob = all_probs[class_index]
+    probs_with_classes.append((prob, class_index))
+  sorted_probs = sorted(probs_with_classes, key = lambda pair: pair[0], reverse=True)
+  return sorted_probs[0:5]
+
 # Get first shape (expect that will be the same for all)
 
 dt=time.time()
@@ -213,7 +222,8 @@ def run_e2e(graph):
     timers['execution_time_create_run_time_graph']=(time.time()-dt)
 
     total_images=0
-    correct_images=0
+    correct_images_top1=0
+    correct_images_top5=0
 
     dt1=time.time()
     for f in files:
@@ -243,33 +253,63 @@ def run_e2e(graph):
 
         top1 = np.argmax(tvm_output.asnumpy())
 
+        top5=[]
+        atop5 = get_top5(tvm_output.asnumpy())
+
         print ('')
-        print('TVM prediction top-1:', top1, synset[top1])
-        print("t-cost=%g" % tcost.mean)
+        print('TVM prediction Top1:', top1, synset[top1])
+
+        print ('')
+        print('TVM prediction Top5:')
+        for q in atop5:
+            x=q[1]
+            y=synset[x]
+            top5.append(x)
+            print (x,y)
+
+        print ('')
+        print("Internal T-cost: %g" % tcost.mean)
 
         # Check correctness if available
         if len(val)>0:
-           correct=False
            top=val[os.path.basename(f)]
+
+           correct_top1=False
            if top==top1:
-              correct=True
-              correct_images+=1
+              correct_top1=True
+              correct_images_top1+=1
 
            print ('')
-           if correct:
-              print ('Current prediction: CORRECT')
+           if correct_top1:
+              print ('Current prediction Top1: CORRECT')
            else:
-              print ('Current prediction: INCORRECT +('+str(top)+')')
+              print ('Current prediction Top1: INCORRECT +('+str(top)+')')
 
-           accuracy_top1=float(correct_images)/float(total_images)
-           print ('Current accuracy:   '+('%.5f'%accuracy_top1))
+           accuracy_top1=float(correct_images_top1)/float(total_images)
+           print ('Current accuracy Top1:   '+('%.5f'%accuracy_top1))
+
+           correct_top5=False
+           if top in top5:
+              correct_top5=True
+              correct_images_top5+=1
+
+           print ('')
+           if correct_top5:
+              print ('Current prediction Top5: CORRECT')
+           else:
+              print ('Current prediction Top5: INCORRECT +('+str(top)+')')
+
+           accuracy_top5=float(correct_images_top5)/float(total_images)
+           print ('Current accuracy Top5:   '+('%.5f'%accuracy_top5))
 
            print ('')
            print ('Total elapsed time: '+('%.1f'%(time.time()-dt1))+' sec.')
 
            timers['total_images']=total_images
-           timers['correct_images_top1']=correct_images
+           timers['correct_images_top1']=correct_images_top1
            timers['accuracy_top1']=accuracy_top1
+           timers['correct_images_top5']=correct_images_top5
+           timers['accuracy_top5']=accuracy_top5
 
         timers['execution_time_classify_internal']=tcost.mean
         timers['execution_time']=tcost.mean
@@ -277,6 +317,8 @@ def run_e2e(graph):
 
         with open ('tmp-ck-timer.json', 'w') as ftimers:
              json.dump(timers, ftimers, indent=2)
+
+        sys.stdout.flush()
 
 def run_layer(old_graph):
     """Run a certain layer."""

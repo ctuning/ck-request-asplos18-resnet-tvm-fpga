@@ -131,10 +131,10 @@ $ ck show machine
 
 You can now try to classify some image via VTA server as following:
 ```
-$ ck run program:request-tvm-vta-pynq --cmd=classify --target=pynq
+$ ck run program:request-tvm-vta-pynq --cmd_key=classify --target=pynq
 ```
 
 Finally, you can test accuracy on IMAGENET as following:
 ```
-$ ck run program:request-tvm-vta-pynq --cmd=test target=pynq
+$ ck run program:request-tvm-vta-pynq --cmd_key=test target=pynq
 ```
