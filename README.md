@@ -129,12 +129,30 @@ You can then check if VTA server running as following:
 $ ck show machine
 ```
 
+### Run classification
 You can now try to classify some image via VTA server as following:
 ```
 $ ck run program:request-tvm-vta-pynq --cmd_key=classify --target=pynq
 ```
 
+### Test accuracy
 Finally, you can test accuracy on IMAGENET as following:
 ```
 $ ck run program:request-tvm-vta-pynq --cmd_key=test target=pynq
+```
+
+Note that if board crahes, you can restart above program and it will continue aggregating statistics
+via program/request-tvm-vta-pynq/tmp/aggregate-ck-timer.json file. You can delete it if you want to collect "fresh" stats.
+
+### Run benchmarking in a unified ReQuEST way and record results
+
+You can run performance benchmark and record experiments as following:
+```
+$ cd `ck find script:benchmark-request-tvm-fpga`
+$ python benchmarking.py
+```
+
+Your results will be recorded in local:experiment:ck-request-asplos18-tvm-fpga-performance-* entries:
+```
+$ ck ls local:experiment:ck-request-asplos18-tvm-fpga-performance-*
 ```
