@@ -32,12 +32,6 @@
           "sort": 30, 
           "tags": "lib,nnvm"
         },
-        "model-vta": {
-          "local": "yes", 
-          "name": "NNVM library", 
-          "sort": 30, 
-          "tags": "lib,nnvm"
-        },
         "model": {
           "force_target_as_host": "yes", 
           "local": "yes", 
@@ -70,12 +64,6 @@
           "tags": "lib,tvm"
         },
         "lib-nnvm": {
-          "local": "yes", 
-          "name": "NNVM library", 
-          "sort": 30, 
-          "tags": "lib,nnvm"
-        },
-        "model-vta": {
           "local": "yes", 
           "name": "NNVM library", 
           "sort": 30, 
