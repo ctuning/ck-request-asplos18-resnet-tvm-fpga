@@ -106,9 +106,9 @@ def do(i):
                       not k.startswith('##characteristics#run#inference_latency'):
                       d[k]=d1[k]
 
-               d['##features#model_size#min']=129770
+               d['##features#model_size#min']=129770000 # Bytes
 
-               d['##features#gpu_freq#min']=500
+               d['##features#gpu_freq#min']=100
                d['##features#cpu_freq#min']=''
                d['##features#freq#min']=d['##features#gpu_freq#min']
 
