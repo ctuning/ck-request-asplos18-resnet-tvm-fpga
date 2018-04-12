@@ -1,9 +1,9 @@
 {
   "acm_badges":{
     "available":"",
-    "functional":"",
+    "functional":"yes",
     "reusable":"",
-    "replicated":"",
+    "replicated":"yes",
     "reproduced":""
   },
   "dois": [
