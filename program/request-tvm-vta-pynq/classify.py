@@ -262,8 +262,8 @@ def run_e2e(graph):
         print ("run ("+str(STAT_REPEAT)+" statistical repetitions)")
         dt=time.time()
         timer = m.module.time_evaluator("run", ctx, number=STAT_REPEAT)
-        timers['execution_time_classify']=(time.time()-dt)/STAT_REPEAT
         tcost = timer()
+        timers['execution_time_classify']=(time.time()-dt)/STAT_REPEAT
 
         # get outputs
         tvm_output = m.get_output(
