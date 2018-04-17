@@ -157,9 +157,6 @@ def do(i, arg):
             model_tags = re.match('VTA model \(net and weights\) \((?P<tags>.*)\)', model_name)
             model_tags = model_tags.group('tags').replace(' ', '').replace(',', '-')
 
-            # Get extra tags 
-            model_name=r['data_name']
-
             record_repo='local'
             record_uoa='ck-request-asplos18-tvm-fpga-performance-'+platform_tags+'.'+model_tags
 
