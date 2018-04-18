@@ -156,3 +156,8 @@ Your results will be recorded in local:experiment:ck-request-asplos18-tvm-fpga-p
 ```
 $ ck ls local:experiment:ck-request-asplos18-tvm-fpga-performance-*
 ```
+
+## Reviewers
+
+This workflow was converted to CK and validated by the following reviewers:
+* [Grigori Fursin](http://fursin.net/research.html)
