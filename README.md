@@ -34,7 +34,7 @@ Please follow this [getting started guide]() to set up your Pynq board.
 
 We used pynq_z1_image_2017_02_10.img with 16GB microSD card and Ubuntu 15.04.
 
-Turn on your board. You should now be able to connect to it as following:
+Turn on your board. You should now be able to connect to it as follows:
 
 ```
 $ ssh xilinx@192.168.2.99
@@ -44,7 +44,7 @@ Use 'xilinx' as password.
 
 ### Install global prerequisites (Ubuntu)
 
-Note that Ubuntu 15.04 is now outdated. You need to fix URLs of Ubuntu repos to be able to update it and install missing packages as following:
+Note that Ubuntu 15.04 is now outdated. You need to fix URLs of Ubuntu repos to be able to update it and install missing packages as follows:
 
 ```
 $ sudo vim /etc/apt/sources.list.d/multistrap-wily.list
@@ -52,7 +52,7 @@ $ sudo vim /etc/apt/sources.list.d/multistrap-wily.list
  deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
 ```
 
-Then you should be able to upgrade your distribution as following:
+Then you should be able to upgrade your distribution as follows:
 ```
 $ sudo apt update
 $ sudo apt upgrade
@@ -123,19 +123,19 @@ $ ck add machine:pynq
 
 Select "remote machine accessed via RPC", then enter hostname and port.
 
-You can then check if VTA server running as following:
+You can then check if VTA server running as follows:
 ```
 $ ck show machine
 ```
 
 ### Run classification
-You can now try to classify some image via VTA server as following:
+You can now try to classify some image via VTA server as follows:
 ```
 $ ck run program:request-tvm-vta-pynq --cmd_key=classify --target=pynq
 ```
 
 ### Test accuracy
-Finally, you can test accuracy on IMAGENET as following:
+Finally, you can test accuracy on IMAGENET as follows:
 ```
 $ ck run program:request-tvm-vta-pynq --cmd_key=test target=pynq
 ```
@@ -145,7 +145,7 @@ via program/request-tvm-vta-pynq/tmp/aggregate-ck-timer.json file. You can delet
 
 ### Run benchmarking in a unified ReQuEST way and record results
 
-You can run performance benchmark and record experiments as following:
+You can run performance benchmark and record experiments as follows:
 ```
 $ cd `ck find script:benchmark-request-tvm-fpga`
 $ python benchmarking.py
