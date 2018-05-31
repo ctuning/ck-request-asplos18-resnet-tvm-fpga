@@ -1,4 +1,6 @@
-# Collective Knowledge workflow for image classification submitted to [ReQuEST at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+[![logo](https://github.com/ctuning/ck-guide-images/blob/master/logo-powered-by-ck.png)](https://github.com/ctuning/ck)
+
+# Collective Knowledge workflow for image classification submitted to the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
 * **Title:** VTA: Open Hardware/Software Stack for Vertical Deep Learning System Optimization
 * **Authors:** Thierry Moreau, Tianqi Chen, Luis Ceze
