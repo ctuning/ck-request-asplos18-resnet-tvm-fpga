@@ -15,9 +15,13 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
 
-## Artifact check-list (meta-information)
+* [ReQuEST submission and reviewing guidelines](http://cknowledge.org/request-cfp-asplos2018.html)
+* [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18-results)
+* [ReQuEST scoreboard](http://cKnowledge.org/request-results)
 
-We use the standard [Artifact Description check-list](http://ctuning.org/ae/submission_extra.html) from systems conferences including CGO, PPoPP, PACT and SuperComputing.
+## Artifact check-list
+
+Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
 * **Algorithm:** image classification
 * **Program:** image classification and accuracy validation
@@ -172,3 +176,13 @@ $ ck ls local:experiment:ck-request-asplos18-tvm-fpga-performance-*
 
 This workflow was converted to CK and validated by the following reviewers:
 * [Grigori Fursin](http://fursin.net/research.html)
+
+## See accepted results on the live scoreboard
+
+[Link](http://cKnowledge.org/request-results)
+
+## Further discussions
+
+* [Collective Knowledge mailing list](http://groups.google.com/group/collective-knowledge)
+* [Collective Knowledge slack](https://collective-knowledge.slack.com)
+* [Artifact evaluation mailing list](http://groups.google.com/group/artifact-evaluation)
