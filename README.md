@@ -38,11 +38,14 @@ Details: [Link](http://cTuning.org/ae/submission_extra.html)
 * **Experiments:** CK command line
 * **How much disk space required (approximately)?** 
 * **How much time is needed to prepare workflow (approximately)?** 30 minutes
-* **How much time is needed to complete experiments (approximately)?** 1 minute to test classification and .. hours to test accuracy
-* **Collective Knowledge workflow framework used?** Yes
-* **Publicly available?:** Yes
-* **Experimental results:** https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga
-* **Scoreboard:** http://cKnowledge.org/request-results
+* **How much time is needed to complete experiments (approximately)?** 1 minute to test classification and .. hours to test full accuracy
+
+* **Publicly available?:** Not yet
+* **Code license(s)?:** 
+* **CK workflow framework used?** Yes
+* **CK workflow URL:** https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga
+* **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga
+* **Original artifact before ReQuEST/CK unification:** https://github.com/uwsaml/vta
 
 ## Installation: PYNQ-Z1 FPGA (connected via RPC from host)
 
