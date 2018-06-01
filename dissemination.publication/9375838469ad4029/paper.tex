@@ -294,4 +294,188 @@ We describe the experimental metrics of our artifact below:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \subsection{Notes}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Unified installation and evaluation for the ReQuEST scoreboard using Collective Knowledge framework}
+
+\subsubsection{Minimal CK installation}
+
+The minimal installation requires:
+
+\begin{packed_itemize}
+ \item Python 2.7 or 3.3+ (limitation is mainly due to unitests)
+ \item Git command line client.
+\end{packed_itemize}
+
+You can install CK in your local user space as follows:
+
+\begin{verbatim}
+$ git clone http://github.com/ctuning/ck
+$ export PATH=$PWD/ck/bin:$PATH
+$ export PYTHONPATH=$PWD/ck:$PYTHONPATH
+\end{verbatim}
+
+You can also install CK via PIP with sudo to avoid setting up environment variables yourself:
+
+\begin{verbatim}
+$ sudo pip install ck
+\end{verbatim}
+
+\subsubsection{CK repository installation}
+
+\begin{verbatim}
+$ ck pull repo:ck-request-asplos18-mobilenets-tvm-arm
+\end{verbatim}
+
+\subsubsection{PYNQ-Z1 FPGA installation (connected via RPC from host)}
+
+Please follow this [getting started guide]() to set up your Pynq board.
+
+We used pynq\_z1\_image\_2017\_02\_10.img with 16GB microSD card and Ubuntu 15.04.
+
+Turn on your board. You should now be able to connect to it as follows:
+
+\begin{verbatim}
+$ ssh xilinx@192.168.2.99
+\end{verbatim}
+
+Use 'xilinx' as password (unless you changed it).
+
+\textbf{Install global prerequisites (Ubuntu)}
+
+Note that Ubuntu 15.04 is now outdated. You need to fix URLs of Ubuntu repos to be able to update it and install missing packages as follows:
+
+\begin{verbatim}
+$ sudo vim /etc/apt/sources.list.d/multistrap-wily.list
+ deb [arch=armhf] http://old-releases.ubuntu.com/ubuntu wily universe main
+ deb-src http://old-releases.ubuntu.com/ubuntu wily universe main
+\end{verbatim}
+
+Then you should be able to upgrade your distribution as follows:
+
+\begin{verbatim}
+$ sudo apt update
+$ sudo apt upgrade
+\end{verbatim}
+
+Now you can install missing deps:
+
+\begin{verbatim}
+$ sudo apt install python-pip python3-pip
+$ pip install wget
+\end{verbatim}
+
+\textbf{Install Collective Knowledge and this repository with all dependencies}
+
+\begin{verbatim}
+$ sudo pip install ck
+$ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
+\end{verbatim}
+
+\textbf{Install and run VTA RPC server via CK}
+
+\begin{verbatim}
+
+$ ck install package:lib-tvm-runtime-master --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
+
+  choose Python 3!
+
+$ ck run program:vta-pynq-server --sudo
+
+  during first execution other missing soft dependencies will be detected or installed including libdma.so and VTA server
+
+\end{verbatim}
+
+If libdma.so is installed in an unusual directory and was not automatically found by CK, 
+you can register it manually as follows (and then restart above commands):
+
+\begin{verbatim}
+$ ck detect soft:lib.pynq.dma --search_dirs={path to libdma.so)
+\end{verbatim}
+
+Note that by default this server will run on host '192.168.2.99' and port '9091'.
+
+Now you can configure your host machine to classify images via this board.
+
+\subsubsection{Installation: host machine (tested on Ubuntu or similar)}
+
+Install missing deps:
+
+\begin{verbatim}
+$ sudo apt install python-pip python3-pip
+$ pip install wget
+\end{verbatim}
+
+\textbf{Install Collective Knowledge and this repository with all dependencies}
+
+\begin{verbatim}
+$ sudo pip install ck
+$ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
+\end{verbatim}
+
+\textbf{Install TVM, NNVM and VTA}
+
+\begin{verbatim}
+$ ck install package:lib-tvm-master-cpu --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
+ Select Python 2.x
+ LLVM > 4.x
+
+$ ck install package:lib-nnvm-master --env.PACKAGE_URL=https://github.com/tqchen/nnvm --env.PACKAGE_GIT_CHECKOUT=qt
+
+$ ck install package:lib-vta-python-master
+\end{verbatim}
+
+\textbf{Set up RPC access to VTA server}
+
+\begin{verbatim}
+$ ck add machine:pynq
+\end{verbatim}
+
+Select "remote machine accessed via RPC", then enter hostname and port.
+
+You can then check if VTA server running as follows:
+
+\begin{verbatim}
+$ ck show machine
+\end{verbatim}
+
+\textbf{Run classification}
+
+You can now try to classify some image via VTA server as follows:
+
+\begin{verbatim}
+$ ck run program:request-tvm-vta-pynq --cmd_key=classify --target=pynq
+\end{verbatim}
+
+\textbf{Test accuracy}
+
+Finally, you can test accuracy on IMAGENET as follows:
+
+\begin{verbatim}
+$ ck run program:request-tvm-vta-pynq --cmd_key=test target=pynq
+\end{verbatim}
+
+Note that if board crahes, you can restart above program and it will continue aggregating statistics
+via "program/request-tvm-vta-pynq/tmp/aggregate-ck-timer.json" file. 
+You can delete it if you want to collect "fresh" stats.
+
+\textbf{Run benchmarking in a unified ReQuEST way and record results}
+
+You can run performance benchmark and record experiments as follows:
+
+\begin{verbatim}
+$ cd `ck find script:benchmark-request-tvm-fpga`
+$ python benchmarking.py
+\end{verbatim}
+
+Your results will be recorded in local:experiment:ck-request-asplos18-tvm-fpga-performance-* entries:
+\begin{verbatim}
+$ ck ls local:experiment:ck-request-asplos18-tvm-fpga-performance-*
+\end{verbatim}
+
+You can pack them and send to ReQuEST organizers as follows:
+
+\begin{verbatim}
+$ ck zip local:experiment:ck-request-asplos18-tvm-fpga-performance-*
+\end{verbatim}
+
 \end{document}
