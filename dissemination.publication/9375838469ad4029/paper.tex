@@ -1,0 +1,297 @@
+% LaTeX template for Artifact Evaluation V20180201
+%
+% Prepared by Grigori Fursin (cTuning foundation, France and dividiti, UK)
+% and Thierry Moreau (University of Washington, USA)
+%
+% This document was derived from the original Artifact Appendix
+% prepared by Grigori Fursin (cTuning foundation, France and dividiti, UK) 
+% and Bruce Childers (University of Pittsburgh, USA)
+%
+% See an example of this Artifact Appendix in the following CGO 2017 paper
+% (with the artifact prepared using the Collective Knowledge framework):
+% https://www.cl.cam.ac.uk/~sa614/papers/Software-Prefetching-CGO2017.pdf
+%
+% (C)opyright 2014-2018
+%
+% CC BY 4.0 license
+%
+
+\documentclass[sigconf]{acmart}
+
+\newenvironment{packed_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+
+% DOI
+\acmDOI{10.1145/3229762.3229766}
+
+% ISBN
+%\acmISBN{123-4567-24-567/08/06}
+
+%Conference
+\acmConference[ReQuEST at ASPLOS'18]{1st ACM Reproducible Quality-Efficient Systems Tournament on Co-designing Pareto-efficient Deep Learning}{March 2018}{Williamsburg, VA, USA}
+\acmYear{2018}
+\copyrightyear{2018}
+
+%\acmPrice{15.00}
+
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+
+
+\begin{document}
+
+\special{papersize=8.5in,11in}
+
+\title{Leveraging the VTA-TVM Hardware-Software Stack \\for FPGA Acceleration of 8-bit ResNet-18 Inference}
+
+\author{Thierry Moreau}
+\affiliation{University of Washington}
+
+\renewcommand{\shortauthors}{}
+\renewcommand{\shorttitle}{}
+
+\maketitle
+
+% \begin{abstract}
+% \end{abstract}
+
+\section{Extended Abstract}
+
+We present a full-stack design to accelerate deep learning inference with FPGAs. Our contribution is two-fold. At the software layer, we leverage and extend TVM~\cite{chen:TVM}, the end-to-end deep learning optimizing compiler, in order to harness FPGA-based acceleration. At the the hardware layer, we present the Vanilla Tensor Accelerator (VTA) which presents a generic, modular, and customizable architecture for TPU-like accelerators.
+Our results take a ResNet-18 description in MxNet and compiles it down to perform 8-bit inference on a 256-PE accelerator implemented on a low-cost Xilinx Zynq FPGA, clocked at 100MHz.
+Our full hardware acceleration stack will be made available for the community to reproduce, and build upon\footnote{Available at: \url{http://github.com/uwsaml/vta}}.
+
+\subsection{Technical Description}
+
+Leveraging FPGA acceleration for deep learning workloads requires extensive cross-stack support in order to compile a user-specified neural network workload specified in a given deep learning framework (MxNet, TensorFlow, PyTorch, Caffe2) down to a low-level hardware assembly program that ends up executing onto the specialized accelerator.
+
+\paragraph{High-Level Algorithm Specification}
+We describe the ResNet-18 8-bit inference workload in MxNet~\cite{MXNet-whitepaper}, one of the mainstream deep learning frameworks.
+MxNet produces an NNVM high-level graph representation of the workload.
+Targeting deep learning hardware accelerators can impose constraints on the high-level graph representation, such as what sections of the inference graph are executing on the CPU or the FPGA, as well data layout constraints (e.g. tiling, packing etc.).
+Finally operators can be fused at the NNVM level in order to minimize data movement between memory and the FPGA.
+
+\paragraph{Library-Level Optimizations}
+Next, each operator is specified, optimized and compiled for our deep learning accelerator using TVM~\cite{chen:TVM}.
+TVM allows for separation between algorithm specification (which are hardware agnostic) and schedule optimizations (which differ for each hardware target).
+Specifically we utilize TVM's accelerator-specific schedule primitives to lower each graph operator into a sequence of operations that can execute on the FPGA-based accelerator:
+\begin{itemize}
+  \item Tensorization: convolutions and fully connected layers get lowered onto tensor operations, which can execute efficiently in hardware (e.g. single cycle matrix-matrix multiplications).
+  \item Virtual Threading: virtual threads are exposed in order to present two concurrent execution threads that execute on mutually exclusive data partitions to keep compute and memory resources busy as much as possible.
+  \item Memory Scoping: TVM can explicitly manage accelerator memory resources by assigning local data buffers to a specific scope that corresponds to an SRAM structure on the FPGA accelerator.
+\end{itemize}
+
+\paragraph{Runtime and JIT Compilation}
+After the TVM optimization and lowering phases, we end up with calls into the accelerator's runtime.
+The runtime assembles the accelerator instruction stream and micro-kernels on the fly in a JIT fashion.
+This offloads the complexities of generating assembly away from the TVM stack.
+The runtime also handles synchronization between the CPU and the FPGA when computation is being offloaded onto the accelerator.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\columnwidth]{figures/vta_overview}
+\caption{VTA Hardware Design Overview.}
+\label{fig:vta_overview}
+\end{figure}
+
+\paragraph{Vanilla Tensor Accelerator (VTA)}
+We present VTA, a generic, modular and customizable TPU-like hardware accelerator design.
+At its core, the VTA design can perform a single matrix-matrix multiplication per cycle.
+These tensorized operations take advantage of the high operational intensity of deep learning workloads.
+VTA is programmed with CISC instructions that describe high-level tensor operations, and RISC micro-kernel that dictate low-level data access patterns for CISC compute instructions.
+In order to maximize compute resources utilization, VTA relies on a decoupled access-execute pipeline~\cite{Smith:DAE} where memory load, stores and computation can occur concurrently.
+We show a high-level schematic of the VTA design in Figure~\ref{fig:vta_overview}: each pipeline stage communicates via dependence queues that guarantee correctness of execution.
+Those dependence queues are explicitly programmed via synchronization operations that are added to the instruction stream in the JIT compilation phase.
+These synchronization operations are derived from thread context information that are specified by the TVM compiler.
+The process is described in more depth in ~\cite{chen:TVM}.
+
+\subsection{Empirical Evaluation}
+
+We train a ResNet-18 neural network with MxNet, and perform post-training tuning on the parameters to convert them to 8-bit weights from 32-bit floating point.
+The Imagenet top-5 validation accuracy is 63\% after fixed-point conversion.
+
+We implement the VTA design on a low-power PYNQ board which incorporates an ARM Cortex A9 dual core CPU clocked at 667MHz and an Artix-7 based FPGA fabric.
+On the modest FPGA resources, we implement a $16\times16$ matrix-vector unit clocked at 100MHz that performs products of 8-bit values and accumulates them into a 32-bit register every cycle.
+The theoretical peak throughput of this flavor of the VTA design lies around 51GOPS/s.
+We allocate 16kB of resources for microkernel cache, 32kB of resources for activation storage, 256kB for parameter storage, and 128kB for the register file (i.e. accumulator storage).
+These on-chip buffers are nowhere near large enough to provide enough on-chip storage for a single layer of ResNet, and therefore enable a case study on effective memory reuse and memory access latency hiding.
+
+We offload all convolution layers of the ResNet-18 network onto the FPGA accelerator, except for the first convolution layer C1, which is evaluated on the CPU.
+Activations and batch normalization operators are evaluated on the FPGA, while max pooling and fully connected layers are evaluated on the CPU.
+
+We describe each of the ResNet-18 layers that we evaluated on the FPGA in Table~\ref{table:resnet18}.
+
+\begin{table}[t]
+  \begin{footnotesize}
+	\begin{tabular}{ccccc}
+	\hline
+	Name & Operator & $H, W$ & $IC, OC$ & $K, S$ \\
+	\hline
+	C1  & conv2d & 224, 224 & 3,64  & 7, 2 \\
+	C2  & conv2d & 56, 56 & 64,64   & 3, 1 \\
+	C3  & conv2d & 56, 56 & 64,64   & 1, 1 \\
+	C4  & conv2d & 56, 56 & 64,128  & 3, 2 \\
+	C5  & conv2d & 56, 56 & 64,128  & 1, 2 \\
+	C6  & conv2d & 28, 28 & 128,128 & 3, 1 \\
+	C7  & conv2d & 28, 28 & 128,256 & 3, 2 \\
+	C8  & conv2d & 28, 28 & 128,256 & 1, 2 \\
+	C9  & conv2d & 14, 14 & 256,256 & 3, 1 \\
+	C10 & conv2d & 14, 14 & 256,512 & 3, 2 \\
+	C11 & conv2d & 14, 14 & 256,512 & 1, 2 \\
+	C12 & conv2d &  7,  7 & 512,512 & 3, 1 \\
+	\hline
+	\end{tabular}
+  \end{footnotesize}
+	\centering
+	\caption{\small{Configurations of all conv2d operators in ResNet-18 used in the single kernel experiment.
+	H/W denotes height and width, IC input channels, OC output channels,
+	K kernel size, and S stride size. All ops use ``SAME'' padding.}}
+	\label{table:resnet18}
+\end{table}
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=1\columnwidth]{figures/vta_roofline}
+\caption{\small{Roofline of an FPGA-based deep learning accelerator running ResNet inference. With latency hiding enabled by TVM, the performance of the benchmarks are brought closer to the roofline, demonstrating higher compute and memory bandwidth efficiency.}}
+\label{fig:fpga_latencyhiding}
+\end{figure}
+
+\paragraph{Single Kernel Evaluation}
+We then evaluate each layer individually to evaluate TVM's ability to efficiently utilize the accelerator's resources.
+The results are shown in the Roofline diagram in Figure ~\ref{fig:fpga_latencyhiding}.
+Roofline performance diagrams provide insight on how well computation and memory resources are utilized on a given system for different workloads.
+Overall, virtual threading in TVM improves performance on all ResNet layers by exploiting latency hiding mechanisms in VTA's decoupled access-execute pipeline.
+Peak compute utilization increases from 70\% with no latency hiding to 88\% with latency hiding turned on.
+
+\paragraph{End-to-end ResNet Evaluation}
+We leverage TVM to generate ResNet inference kernels on the PYNQ platform and offload as many layers as possible to VTA.
+We utilize TVM to generate both schedules for the CPU only and CPU+FPGA implementation.
+Due to its shallow convolution depth, the first ResNet convolution layer could not be efficiently offloaded on the FPGA and is instead computed on the CPU.
+All other convolution layers in ResNet, however, are amenable to efficient offloading.
+Operations including residual layers and max pooling are also performed on the CPU since TVM does not support these operations.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=1\columnwidth]{figures/exp_fpga_e2e}
+\caption{\small{We offload convolutions in the ResNet workload to an FPGA-based accelerator.
+The grayed-out bars correspond to layers that cannot be accelerated by the FPGA and therefore have to run on the CPU. The FPGA can provide a 40x acceleration on offloaded convolution layers over the Cortex A9.}}
+\label{fig:e2e_fpga}
+\end{figure}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{paper}
+
+\newpage
+
+\onecolumn
+
+\appendix
+\section{Artifact Appendix}
+
+Submission and reviewing methodology: \\
+{\em http://cTuning.org/ae/submission-20171101.html}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abstract}
+
+This Artifact Appendix describes experimental workflow,
+artifacts and results from this paper evaluated 
+during the 1st reproducible ReQuEST tournament at the ACM ASPLOS'18:
+
+\begin{packed_itemize}
+  \item {\bf Original artifact:} \url{https://github.com/uwsaml/vta}
+  \item {\bf Latest CK workflow:} \url{https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga}
+  \item {\bf CK results:} \url{https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga}
+  \item {\bf Artifact DOI:} \url{https://doi.org/10.1145/3229772}
+  \item {\bf ReQuEST submission and reviewing guidelines:} \url{http://cknowledge.org/request-cfp-asplos2018.html} (\cite{request-asplos18})
+  \item {\bf ReQuEST goals:} \cite{cm:29db2248aba45e59:0c7348dfbadd5b95}
+  \item {\bf ReQuEST workflows:} \url{https://github.com/ctuning/ck-request-asplos18-results}
+  \item {\bf ReQuEST scoreboard:} \url{http://cKnowledge.org/request-results}
+\end{packed_itemize}
+
+Our original hardware and software artifact is fully contained under: \url{https://github.com/uwsaml/vta}.
+Our repository contains README.md instructions on how to deploy, and reproduce the software and hardware artifacts on the Pynq FPGA development platform.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Artifact check-list}
+
+Details: \url{http://cTuning.org/ae/submission_extra.html}
+
+\begin{itemize}
+  \item {\bf Algorithm:} Deep Learning, Neural Networks, ResNet-18 inference, 2D convolutions
+  \item {\bf Program:} MxNet
+  \item {\bf Compilation:} NNVM, TVM
+  \item {\bf Transformations:} TVM Schedule Optimizations, loop splitting, loop reordering, tensorization, virtual threading
+  \item {\bf Binary:} FPGA bit-stream and RPC server executable
+  \item {\bf Data set:} ImageNet 2012 validation (50,000 images) and ResNet-18 8-bit
+  \item {\bf Run-time environment:} Ubuntu 15.04; Python2/3
+  \item {\bf Hardware:} Xilinx Pynq-Z1 FPGA development board, x86 host desktop/laptop
+  \item {\bf Run-time state:} 100MHz clock, 2W SoC peak consumption
+  \item {\bf Execution:} remote execution via RPC
+  \item {\bf Metrics:} total execution time; top1/top5 accuracy over some (all) images from the data set
+  \item {\bf Output:} classification result; execution time; accuracy
+  \item {\bf Experiments:} automated via CK command line
+  \item {\bf How much disk space required (approximately)?:} 200MB for VTA repo
+  \item {\bf How much time is needed to prepare workflow (approximately)?:} 15 mins for inference only, 2 hours for hardware compilation of hardware artifact
+  \item {\bf How much time is needed to complete experiments (approximately)?:} 20 mins for full Imagenet test dataset
+  \item {\bf Publicly available?:} Will be (not at the time of the publishing)
+  \item {\bf Code license?:} 
+  \item {\bf Collective Knowledge workflow framework used?:} Yes
+  \item {\bf CK workflow URL:} \url{https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga}
+  \item {\bf CK results URL:} \url{https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga}
+  \item {\bf Original artifact URL:} \url{https://github.com/uwsaml/vta}
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Description}
+
+\subsubsection{How to obtain}
+
+Our artifact is fully contained under: \url{https://github.com/uwsaml/vta}.
+Our repository contains README.md instructions on how to deploy, and reproduce the software and hardware artifacts on the Pynq FPGA development platform.
+
+\subsubsection{Hardware dependencies}
+
+Reproducing the hardware artifact requires a Pynq development board (\url{http://www.pynq.io/}) along with a power supply, an 8+GB SD card, and an Ethernet cable to communicate with the host. In order to run the example, any x86 machine should do. Compiling the hardware if need be requires a machine with at least 4GB of RAM and two cores, and 30GB of disk space (Xilinx toolchains take space).
+
+\subsubsection{Software dependencies}
+
+Reproducing the examples requires Python, Numpy, MxNet, NNVM (\url{nnvm.tvmlang.org}) and TVM installed. We describe the installation process in the VTA Github repo README files.
+
+\subsubsection{Data sets}
+
+We provide cached pre-trained network parameters, and a pre-compiled bitstreams to be downloaded from self-hosted servers. 
+The ImageNet dataset can be accessed on the official website: \url{http://www.image-net.org/}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installation}
+
+The installation instructions are detailed under: \url{https://github.com/uwsaml/vta}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment workflow}
+
+The experimental workflow was ported to utilize CK under \url{https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Evaluation and expected result}
+We describe the experimental metrics of our artifact below:
+\begin{itemize}
+\item Single batch inference time: 0.42s
+\item Top-1 accuracy: 37\%
+\item Top-5 accuracy: 63\%
+\item Power consumption: peak 2W for SoC
+\item Device cost: \$65 for academics, \$200 otherwise
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Experiment customization}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \subsection{Notes}
+
+\end{document}

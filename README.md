@@ -23,29 +23,28 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
-* **Algorithm:** image classification
-* **Program:** image classification and accuracy validation
-* **Compilation:** GCC and LLVM >=4
-* **Transformations:** TVM
-* **Binary:** will be compiled on a target platform
+* **Algorithm:** image classification (Deep Learning, Neural Networks, ResNet-18 inference, 2D convolutions)
+* **Program:** image classification and accuracy validation (MxNet)
+* **Compilation:** NNVM, TVM, GCC and LLVM >=4
+* **Transformations:** TVM Schedule Optimizations, loop splitting, loop reordering, tensorization, virtual threading
+* **Binary:** FPGA bit-stream and RPC server executable
 * **Data set:** ImageNet 2012 validation (50,000 images) and ResNet-18 8-bit
-* **Run-time environment:** Ubuntu 15.04
-* **Hardware:** Xilinx Pynq-Z1 FPGA
+* **Run-time environment:** Ubuntu 15.04; Python2/3
+* **Hardware:** Xilinx Pynq-Z1 FPGA development board, x86 host desktop/laptop
 * **Run-time state:** 
 * **Execution:** remote execution via RPC
 * **Metrics:** total execution time; top1/top5 accuracy over some (all) images from the data set
 * **Output:** classification result; execution time; accuracy
-* **Experiments:** CK command line
-* **How much disk space required (approximately)?** 
-* **How much time is needed to prepare workflow (approximately)?** 30 minutes
-* **How much time is needed to complete experiments (approximately)?** 1 minute to test classification and .. hours to test full accuracy
-
-* **Publicly available?:** Not yet
+* **Experiments:** automated via CK command line
+* **How much disk space required (approximately)?** 200MB for VTA repo
+* **How much time is needed to prepare workflow (approximately)?** 15 mins for inference only, 2 hours for hardware compilation of hardware artifact
+* **How much time is needed to complete experiments (approximately)?** 20 mins for full Imagenet test dataset
+* **Publicly available?:** Will be (not at the time of the publishing)
 * **Code license(s)?:** 
 * **CK workflow framework used?** Yes
 * **CK workflow URL:** https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga
 * **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga
-* **Original artifact before ReQuEST/CK unification:** https://github.com/uwsaml/vta
+* **Original artifact:** https://github.com/uwsaml/vta
 
 ## Installation: PYNQ-Z1 FPGA (connected via RPC from host)
 
@@ -101,6 +100,12 @@ $ ck run program:vta-pynq-server --sudo
 
   during first execution other missing soft dependencies will be detected or installed including libdma.so and VTA server
 
+```
+
+If libdma.so is installed in an unusual directory and was not automatically found by CK (see #1), 
+you can register it manually as follows (and then restart above commands):
+```
+$ ck detect soft:lib.pynq.dma --search_dirs={path to libdma.so)
 ```
 
 Note that by default this server will run on host '192.168.2.99' and port '9091'.
