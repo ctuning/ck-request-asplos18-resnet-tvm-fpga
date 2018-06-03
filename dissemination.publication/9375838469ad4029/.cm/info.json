@@ -16,5 +16,6 @@
       "4",
       "1"
     ]
-  }
+  },
+  "data_name":"Leveraging the VTA-TVM Hardware-Software Stack for FPGA Acceleration of 8-bit ResNet-18 Inference"
 }

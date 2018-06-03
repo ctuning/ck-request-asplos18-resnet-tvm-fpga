@@ -106,6 +106,8 @@
   "tags": [
     "tvm-fpga-demo", 
     "request",
+    "request-tournament",
+    "request-asplos18",
     "demo"
   ]
 }

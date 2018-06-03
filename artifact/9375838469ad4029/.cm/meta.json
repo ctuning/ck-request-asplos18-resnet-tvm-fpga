@@ -7,8 +7,12 @@
     "reusable": ""
   },
   "artifact_doi": "https://doi.org/10.1145/3229772",
+  "ck_repo_results":"ck-request-asplos18-results-resnet-tvm-fpga",
+  "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga",
+  "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga",
   "dois": [],
   "html": "",
+  "original_repo": "https://github.com/uwsaml/vta",
   "paper_doi": "https://doi.org/10.1145/3229762.3229766",
   "repos": [
     {
@@ -19,5 +23,9 @@
       "name": "CK results",
       "url": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga"
     }
+  ],
+  "tags": [
+    "request-tournament",
+    "request-asplos18"
   ]
 }

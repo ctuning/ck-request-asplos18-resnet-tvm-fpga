@@ -30,6 +30,8 @@
   "run_vars": {}, 
   "tags": [
     "request",
+    "request-tournament",
+    "request-asplos18",
     "vta-pynq-server"
   ]
 }
