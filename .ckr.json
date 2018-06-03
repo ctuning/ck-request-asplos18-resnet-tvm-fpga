@@ -4,6 +4,7 @@
   "data_alias": "ck-request-asplos18-resnet-tvm-fpga",
   "data_name": "ck-request-asplos18-resnet-tvm-fpga",
   "dict": {
+    "ck_artifact":"9375838469ad4029",
     "shared": "git",
     "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga",
     "repo_deps": [

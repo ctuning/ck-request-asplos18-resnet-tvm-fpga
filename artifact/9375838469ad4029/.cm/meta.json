@@ -1,16 +1,23 @@
 {
-  "acm_badges":{
-    "available":"",
-    "functional":"yes",
-    "reusable":"",
-    "replicated":"yes",
-    "reproduced":""
+  "acm_badges": {
+    "available": "",
+    "functional": "yes",
+    "replicated": "yes",
+    "reproduced": "",
+    "reusable": ""
   },
-  "dois": [
-  ],
-  "html":"",
+  "artifact_doi": "https://doi.org/10.1145/3229772",
+  "dois": [],
+  "html": "",
+  "paper_doi": "https://doi.org/10.1145/3229762.3229766",
   "repos": [
-    {"name":"CK workflow", "url":"https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"},
-    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga"}
+    {
+      "name": "CK workflow",
+      "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"
+    },
+    {
+      "name": "CK results",
+      "url": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga"
+    }
   ]
 }

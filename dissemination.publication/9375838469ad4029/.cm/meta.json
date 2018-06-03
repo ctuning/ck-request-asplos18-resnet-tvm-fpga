@@ -1,1 +1,14 @@
-{}
+{
+  "affiliations": {
+    "1": {
+      "name": "University of Washington"
+    }
+  }, 
+  "authors": [
+    {
+      "affiliation": "1", 
+      "name": "45486390d2262917"
+    }
+  ], 
+ "title":"Leveraging the VTA-TVM Hardware-Software Stack for FPGA Acceleration of 8-bit ResNet-18 Inference"
+}

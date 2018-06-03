@@ -8,7 +8,7 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 ## References
 
 * **Title:** VTA: Open Hardware/Software Stack for Vertical Deep Learning System Optimization
-* **Authors:** Thierry Moreau, Tianqi Chen, Luis Ceze
+* **Authors:** Thierry Moreau
 
 * [ACM paper](https://doi.org/10.1145/3229762.3229766)
 * [ACM artifact](https://doi.org/10.1145/3229772)
