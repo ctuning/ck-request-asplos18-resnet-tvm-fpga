@@ -1,13 +1,14 @@
 {
   "affiliations": {
     "1": {
-      "name": "University of Washington"
+      "name": "University of Washington, USA"
     }
   },
   "authors": [
     {
       "affiliation": "1",
-      "name": "45486390d2262917"
+      "name": "45486390d2262917",
+      "email_address": "moreau@cs.washington.edu"
     }
   ],
   "tags": [

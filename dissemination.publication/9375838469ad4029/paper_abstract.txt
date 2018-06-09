@@ -1,3 +1,9 @@
-We present a full-stack design to accelerate deep learning inference with FPGAs. Our contribution is two-fold. At the software layer, we leverage and extend TVM~\cite{chen:TVM}, the end-to-end deep learning optimizing compiler, in order to harness FPGA-based acceleration. At the the hardware layer, we present the Vanilla Tensor Accelerator (VTA) which presents a generic, modular, and customizable architecture for TPU-like accelerators.
-Our results take a ResNet-18 description in MxNet and compiles it down to perform 8-bit inference on a 256-PE accelerator implemented on a low-cost Xilinx Zynq FPGA, clocked at 100MHz.
-Our full hardware acceleration stack will be made available for the community to reproduce, and build upon\footnote{Available at: \url{http://github.com/uwsaml/vta}}.
+We present a full-stack design to accelerate deep learning inference with FPGAs. 
+Our contribution is two-fold. At the software layer, we leverage and extend TVM, 
+the end-to-end deep learning optimizing compiler, in order to harness FPGA-based acceleration. 
+At the the hardware layer, we present the Vanilla Tensor Accelerator (VTA) 
+which presents a generic, modular, and customizable architecture for TPU-like accelerators.
+Our results take a ResNet-18 description in MxNet and compiles it down to perform 8-bit 
+inference on a 256-PE accelerator implemented on a low-cost Xilinx Zynq FPGA, clocked at 100MHz.
+Our full hardware acceleration stack will be made available for the community to reproduce, 
+and build upon at http://github.com/uwsaml/vta.
