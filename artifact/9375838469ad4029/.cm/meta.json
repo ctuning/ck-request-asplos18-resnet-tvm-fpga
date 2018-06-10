@@ -1,31 +1,34 @@
 {
   "acm_badges": {
-    "available": "",
-    "functional": "yes",
-    "replicated": "yes",
-    "reproduced": "",
+    "available": "", 
+    "functional": "yes", 
+    "replicated": "yes", 
+    "reproduced": "", 
     "reusable": ""
-  },
-  "artifact_doi": "https://doi.org/10.1145/3229772",
-  "ck_repo_results":"ck-request-asplos18-results-resnet-tvm-fpga",
-  "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga",
-  "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga",
-  "dois": [],
-  "html": "",
-  "original_repo": "https://github.com/uwsaml/vta",
-  "paper_doi": "https://doi.org/10.1145/3229762.3229766",
+  }, 
+  "artifact_doi": "https://doi.org/10.1145/3229772", 
+  "ck_repo_results": "ck-request-asplos18-results-resnet-tvm-fpga", 
+  "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga", 
+  "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga", 
+  "copyright_holder_name": "University of Washington", 
+  "copyright_holder_year": "2018", 
+  "dois": [], 
+  "html": "", 
+  "license": "authors' code is available under Apache 2.0 license; CK workflow is available under BSD 3-clause license", 
+  "original_repo": "https://github.com/uwsaml/vta", 
+  "paper_doi": "https://doi.org/10.1145/3229762.3229766", 
   "repos": [
     {
-      "name": "CK workflow",
+      "name": "CK workflow", 
       "url": "https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga"
-    },
+    }, 
     {
-      "name": "CK results",
+      "name": "CK results", 
       "url": "https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga"
     }
-  ],
+  ], 
   "tags": [
-    "request-tournament",
+    "request-tournament", 
     "request-asplos18"
   ]
 }

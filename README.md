@@ -40,7 +40,7 @@ Details: [Link](http://cTuning.org/ae/submission_extra.html)
 * **How much time is needed to prepare workflow (approximately)?** 15 mins for inference only, 2 hours for hardware compilation of hardware artifact
 * **How much time is needed to complete experiments (approximately)?** 20 mins for full Imagenet test dataset
 * **Publicly available?:** Will be (not at the time of the publishing)
-* **Code license(s)?:** 
+* **Code license(s)?:** Apache 2.0
 * **CK workflow framework used?** Yes
 * **CK workflow URL:** https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga
 * **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga
