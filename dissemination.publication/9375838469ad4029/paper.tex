@@ -160,7 +160,7 @@ We describe each of the ResNet-18 layers that we evaluated on the FPGA in Table~
 \end{figure}
 
 \paragraph{Single Kernel Evaluation}
-We then evaluate each layer individually to evaluate TVM's ability to efficiently utilize the accelerator's resources.
+We evaluate each layer individually to evaluate TVM's ability to efficiently utilize the accelerator's resources.
 The results are shown in the Roofline diagram in Figure ~\ref{fig:fpga_latencyhiding}.
 Roofline performance diagrams provide insight on how well computation and memory resources are utilized on a given system for different workloads.
 Overall, virtual threading in TVM improves performance on all ResNet layers by exploiting latency hiding mechanisms in VTA's decoupled access-execute pipeline.
@@ -390,17 +390,17 @@ $ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
 \textbf{Install and run VTA RPC server via CK}
 
 \begin{verbatim}
-
 $ ck install package:lib-tvm-runtime-master --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
-
-  choose Python 3!
-
-$ ck run program:vta-pynq-server --sudo
-
-  during first execution other missing soft dependencies 
-  will be detected or installed including libdma.so and VTA server.
-
 \end{verbatim}
+
+Choose Python 3!
+
+\begin{verbatim}
+$ ck run program:vta-pynq-server --sudo
+\end{verbatim}
+
+During first execution other missing soft dependencies 
+will be detected or installed including libdma.so and VTA server.
 
 If libdma.so is installed in an unusual directory and was not automatically found by CK, 
 you can register it manually as follows (and then restart above commands):
@@ -433,12 +433,13 @@ $ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
 
 \begin{verbatim}
 $ ck install package:lib-tvm-master-cpu --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
- Select Python 2.x
- LLVM > 4.x
+\end{verbatim}
 
+Select Python 2.x and LLVM > 4.x
+
+\begin{verbatim}
 $ ck install package:lib-nnvm-master --env.PACKAGE_URL=https://github.com/tqchen/nnvm \
     --env.PACKAGE_GIT_CHECKOUT=qt
-
 $ ck install package:lib-vta-python-master
 \end{verbatim}
 
