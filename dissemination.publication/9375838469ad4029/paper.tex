@@ -48,7 +48,7 @@
 
 \title{Leveraging the VTA-TVM Hardware-Software Stack \\for FPGA Acceleration of 8-bit ResNet-18 Inference}
 
-\author{Thierry Moreau}
+\author{Thierry Moreau, Tianqi Chen, Luis Ceze}
 \affiliation{University of Washington}
 
 \renewcommand{\shortauthors}{}
@@ -65,21 +65,22 @@
 
 \subsection{Technical Description}
 
-Leveraging FPGA acceleration for deep learning workloads requires extensive cross-stack support in order to compile a user-specified neural network workload specified in a given deep learning framework (MxNet, TensorFlow, PyTorch, Caffe2) down to a low-level hardware assembly program that ends up executing onto the specialized accelerator.
+Leveraging FPGA acceleration for deep learning workloads requires extensive cross-stack support.
+Bridging the gap between a high-level and productivity-oriented neural network workload specification (MxNet, TensorFlow, PyTorch or Caffe2), and a low-level and efficiency-oriented executable tailored for hardware accelerators requires optimizations across multiple layers of the hardware-software stack.
 
 \paragraph{High-Level Algorithm Specification}
 We describe the ResNet-18 8-bit inference workload in MxNet~\cite{MXNet-whitepaper}, one of the mainstream deep learning frameworks.
 MxNet produces an NNVM high-level graph representation of the workload.
-Targeting deep learning hardware accelerators can impose constraints on the high-level graph representation, such as what sections of the inference graph are executing on the CPU or the FPGA, as well data layout constraints (e.g. tiling, packing etc.).
+Targeting deep learning hardware accelerators can impose constraints on the high-level graph representation, such as what sections of the inference graph are executing on the CPU or the FPGA, as well data layout constraints (e.g. tiling, spatial packing etc.).
 Finally operators can be fused at the NNVM level in order to minimize data movement between memory and the FPGA.
 
-\paragraph{Library-Level Optimizations}
+\paragraph{Operator-Level Optimizations}
 Next, each operator is specified, optimized and compiled for our deep learning accelerator using TVM~\cite{chen:TVM}.
-TVM allows for separation between algorithm specification (which are hardware agnostic) and schedule optimizations (which differ for each hardware target).
-Specifically we utilize TVM's accelerator-specific schedule primitives to lower each graph operator into a sequence of operations that can execute on the FPGA-based accelerator:
+TVM allows for separation between the algorithm specification (which is hardware agnostic) and the schedule optimizations (which differ for each hardware target).
+Specifically, we utilize TVM's accelerator-specific schedule primitives to lower each graph operator into a sequence of operations that can execute on the FPGA-based accelerator. Those include:
 \begin{itemize}
-  \item Tensorization: convolutions and fully connected layers get lowered onto tensor operations, which can execute efficiently in hardware (e.g. single cycle matrix-matrix multiplications).
-  \item Virtual Threading: virtual threads are exposed in order to present two concurrent execution threads that execute on mutually exclusive data partitions to keep compute and memory resources busy as much as possible.
+  \item Tensorization: convolutions and fully connected layers get lowered down to tensor operations, which execute efficiently in hardware (e.g. single-cycle matrix-matrix multiplication as in ~\cite{Jouppi:TPU}).
+  \item Virtual Threading: virtual threads are exposed in order to present two concurrent execution threads that execute on mutually exclusive data partitions to keep compute and memory resources busy as much as possible (e.g. decoupled access-execute as in ~\cite{Smith:DAE} to maximize resource utilization).
   \item Memory Scoping: TVM can explicitly manage accelerator memory resources by assigning local data buffers to a specific scope that corresponds to an SRAM structure on the FPGA accelerator.
 \end{itemize}
 
