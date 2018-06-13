@@ -394,7 +394,8 @@ $ ck install package:lib-tvm-runtime-master --env.PACKAGE_GIT_CHECKOUT=e4c2af9ab
 
 $ ck run program:vta-pynq-server --sudo
 
-  during first execution other missing soft dependencies will be detected or installed including libdma.so and VTA server
+  during first execution other missing soft dependencies 
+  will be detected or installed including libdma.so and VTA server.
 
 \end{verbatim}
 
@@ -432,7 +433,8 @@ $ ck install package:lib-tvm-master-cpu --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3
  Select Python 2.x
  LLVM > 4.x
 
-$ ck install package:lib-nnvm-master --env.PACKAGE_URL=https://github.com/tqchen/nnvm --env.PACKAGE_GIT_CHECKOUT=qt
+$ ck install package:lib-nnvm-master --env.PACKAGE_URL=https://github.com/tqchen/nnvm \
+    --env.PACKAGE_GIT_CHECKOUT=qt
 
 $ ck install package:lib-vta-python-master
 \end{verbatim}
