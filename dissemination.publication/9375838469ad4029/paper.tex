@@ -393,7 +393,8 @@ $ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
 \textbf{Install and run VTA RPC server via CK}
 
 \begin{verbatim}
-$ ck install package:lib-tvm-runtime-master --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
+$ ck install package:lib-tvm-runtime-master \
+   --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
 \end{verbatim}
 
 Choose Python 3!
@@ -435,7 +436,8 @@ $ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
 \textbf{Install TVM, NNVM and VTA}
 
 \begin{verbatim}
-$ ck install package:lib-tvm-master-cpu --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
+$ ck install package:lib-tvm-master-cpu \
+   --env.PACKAGE_GIT_CHECKOUT=e4c2af9abdcb3c7aabafba8084414d7739c17c4c
 \end{verbatim}
 
 Select Python 2.x and LLVM > 4.x
