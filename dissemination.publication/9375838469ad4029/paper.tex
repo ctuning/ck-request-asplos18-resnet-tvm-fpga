@@ -97,12 +97,12 @@ The runtime also handles synchronization between the CPU and the FPGA when compu
 \label{fig:vta_overview}
 \end{figure}
 
-\paragraph{Vanilla Tensor Accelerator (VTA)}
+\paragraph{Versatile Tensor Accelerator (VTA)}
 We provide an overview of VTA: a generic, modular and customizable TPU-like hardware accelerator design.
 At its core, the VTA design can perform a single matrix-matrix multiplication per cycle.
 These \emph{tensorized} operations are tailored to take advantage of the high operational intensity of deep learning workloads.
 VTA is programmed with CISC instructions that describe high-level, multi-cycle tensor operations, and RISC micro-kernel instructions that dictate low-level data access patterns for CISC compute-instructions.
-In order to maximize compute resources utilization, VTA relies on a decoupled access-execute pipeline~\cite{Smith:DAE} where memory load, stores and computation can occur independently, and concurrently.
+In order to maximize compute resources utilization, VTA relies on a decoupled access-execute pipeline~\cite{Smith:DAE} where memory loads, memory stores, and computation can occur independently, and concurrently.
 We show a high-level schematic of the VTA design in Figure~\ref{fig:vta_overview}: each pipeline stage communicates via dependence queues that guarantee correctness of execution.
 Those dependence queues are explicitly programmed via synchronization operations that are added to the instruction stream in the JIT compilation phase.
 These synchronization operations are derived from thread context information which TVM produces when the user parallelizes a workload across two virtual threads.
@@ -154,7 +154,7 @@ We describe each of the ResNet-18 layers that we evaluated on the FPGA in Table~
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=1\columnwidth]{figures/vta_roofline}
+\includegraphics[width=0.9\columnwidth]{figures/vta_roofline}
 \caption{\small{Roofline of an FPGA-based deep learning accelerator running ResNet inference. With latency hiding enabled by TVM, the performance of the benchmarks are brought closer to the roofline, demonstrating higher compute and memory bandwidth efficiency.}}
 \label{fig:fpga_latencyhiding}
 \end{figure}
@@ -175,7 +175,7 @@ Operations including residual layers and max pooling are also performed on the C
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=1\columnwidth]{figures/exp_fpga_e2e}
+\includegraphics[width=0.9\columnwidth]{figures/exp_fpga_e2e}
 \caption{\small{We offload convolutions in the ResNet workload to an FPGA-based accelerator.
 The grayed-out bars correspond to layers that cannot be accelerated by the FPGA and therefore have to run on the CPU. The FPGA can provide a 40x acceleration on offloaded convolution layers over the Cortex A9.}}
 \label{fig:e2e_fpga}
@@ -197,9 +197,9 @@ Submission and reviewing methodology: \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Abstract}
 
-This Artifact Appendix describes experimental workflow,
+This Artifact Appendix describes the experimental workflow,
 artifacts and results from this paper evaluated 
-during the 1st reproducible ReQuEST tournament at the ACM ASPLOS'18:
+during the 1st reproducibility-focused ReQuEST tournament at the ACM ASPLOS'18:
 
 \begin{packed_itemize}
   \item {\bf Original artifact:} \url{https://github.com/uwsaml/vta}
@@ -221,7 +221,7 @@ Our repository contains README.md instructions on how to deploy, and reproduce t
 Details: \url{http://cTuning.org/ae/submission_extra.html}
 
 \begin{itemize}
-  \item {\bf Algorithm:} Deep Learning, Neural Networks, ResNet-18 inference, 2D convolutions
+  \item {\bf Algorithm:} Deep Learning, Neural Networks, ResNet-18 inference, 2D convolution
   \item {\bf Program:} MxNet
   \item {\bf Compilation:} NNVM, TVM
   \item {\bf Transformations:} TVM Schedule Optimizations, loop splitting, loop reordering, tensorization, virtual threading
@@ -255,7 +255,7 @@ Our repository contains README.md instructions on how to deploy, and reproduce t
 
 \subsubsection{Hardware dependencies}
 
-Reproducing the hardware artifact requires a Pynq development board (\url{http://www.pynq.io/}) along with a power supply, an 8+GB SD card, and an Ethernet cable to communicate with the host. In order to run the example, any x86 machine should do. Compiling the hardware if need be requires a machine with at least 4GB of RAM and two cores, and 30GB of disk space (Xilinx toolchains take space).
+Reproducing the hardware artifact requires a Pynq development board (\url{http://www.pynq.io/}) along with a power supply, an 8+GB SD card, and an Ethernet cable to communicate with the host. In order to run the example, any x86 machine should do. Compiling the hardware requires a machine with at least 4GB of RAM, two cores, and 30GB of disk space for the Xilinx Vivado FPGA toolchains.
 
 \subsubsection{Software dependencies}
 
@@ -284,7 +284,7 @@ We describe the experimental metrics of our artifact below:
 \item Top-1 accuracy: 37\%
 \item Top-5 accuracy: 63\%
 \item Power consumption: peak 2W for SoC
-\item Device cost: \$65 for academics, \$200 otherwise
+\item Device cost: \$65 for academics (at the time of the paper submission), \$200 otherwise
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
