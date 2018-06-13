@@ -221,25 +221,25 @@ Our repository contains README.md instructions on how to deploy, and reproduce t
 Details: \url{http://cTuning.org/ae/submission_extra.html}
 
 \begin{itemize}
-  \item {\bf Algorithm:} Deep Learning, Neural Networks, ResNet-18 inference, 2D convolution
-  \item {\bf Program:} MxNet
-  \item {\bf Compilation:} NNVM, TVM
-  \item {\bf Transformations:} TVM Schedule Optimizations, loop splitting, loop reordering, tensorization, virtual threading
-  \item {\bf Binary:} FPGA bit-stream and RPC server executable
-  \item {\bf Data set:} ImageNet 2012 validation (50,000 images) and ResNet-18 8-bit
-  \item {\bf Run-time environment:} Ubuntu 15.04; Python2/3
-  \item {\bf Hardware:} Xilinx Pynq-Z1 FPGA development board, x86 host desktop/laptop
-  \item {\bf Run-time state:} 100MHz clock, 2W SoC peak consumption
-  \item {\bf Execution:} remote execution via RPC
-  \item {\bf Metrics:} total execution time; top1/top5 accuracy over some (all) images from the data set
-  \item {\bf Output:} classification result; execution time; accuracy
-  \item {\bf Experiments:} automated via CK command line
-  \item {\bf How much disk space required (approximately)?:} 200MB for VTA repo
-  \item {\bf How much time is needed to prepare workflow (approximately)?:} 15 mins for inference only, 2 hours for hardware compilation of hardware artifact
-  \item {\bf How much time is needed to complete experiments (approximately)?:} 20 mins for full Imagenet test dataset
-  \item {\bf Publicly available?:} Will be (not at the time of the publishing)
-  \item {\bf Code license?:} Apache 2.0
-  \item {\bf Collective Knowledge workflow framework used?:} Yes
+  \item {\bf Algorithm:} Deep Learning, Neural Networks, ResNet-18 inference, 2D convolution.
+  \item {\bf Program:} MxNet.
+  \item {\bf Compilation:} NNVM, TVM.
+  \item {\bf Transformations:} TVM schedule optimizations include: loop splitting, loop reordering, tensorization, virtual threading. Neural network optimizations include: quantization, operator fusion.
+  \item {\bf Binary:} FPGA bitstream and RPC server executable.
+  \item {\bf Data set:} ImageNet 2012 validation (50,000 images) and ResNet-18 8-bit.
+  \item {\bf Run-time environment:} Ubuntu 15.04; Python2/3.
+  \item {\bf Hardware:} Xilinx Pynq-Z1 FPGA development board, x86 host machine.
+  \item {\bf Run-time state:} 667MHz CPU clock, 100MHz FPGA clock, 2W SoC peak consumption.
+  \item {\bf Execution:} Remote execution via RPC.
+  \item {\bf Metrics:} Total execution time; top1/top5 accuracy over some (all) images from the data set.
+  \item {\bf Output:} Classification result; execution time; accuracy.
+  \item {\bf Experiments:} Automated via CK command line.
+  \item {\bf How much disk space required (approximately)?:} 200MB for VTA repository and dependences after compilation.
+  \item {\bf How much time is needed to prepare workflow (approximately)?:} 15 mins for inference only, 2 hours for re-compilation of FPGA hardware artifact.
+  \item {\bf How much time is needed to complete experiments (approximately)?:} 20 mins for full Imagenet test dataset.
+  \item {\bf Publicly available?:} Will be (not at the time of the publishing).
+  \item {\bf Code license?:} Apache 2.0.
+  \item {\bf Collective Knowledge workflow framework used?:} Yes.
   \item {\bf CK workflow URL:} \url{https://github.com/ctuning/ck-request-asplos18-resnet-tvm-fpga}
   \item {\bf CK results URL:} \url{https://github.com/ctuning/ck-request-asplos18-results-resnet-tvm-fpga}
   \item {\bf Original artifact URL:} \url{https://github.com/uwsaml/vta}
