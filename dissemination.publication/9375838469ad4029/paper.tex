@@ -251,19 +251,21 @@ Details: \url{http://cTuning.org/ae/submission_extra.html}
 \subsubsection{How to obtain}
 
 Our artifact is fully contained under: \url{https://github.com/uwsaml/vta}.
-Our repository contains README.md instructions on how to deploy, and reproduce the software and hardware artifacts on the Pynq FPGA development platform.
+Our repository contains instructions on how to deploy, and reproduce the software and hardware artifacts on the Pynq FPGA development platform.
 
 \subsubsection{Hardware dependencies}
 
-Reproducing the hardware artifact requires a Pynq development board (\url{http://www.pynq.io/}) along with a power supply, an 8+GB SD card, and an Ethernet cable to communicate with the host. In order to run the example, any x86 machine should do. Compiling the hardware requires a machine with at least 4GB of RAM, two cores, and 30GB of disk space for the Xilinx Vivado FPGA toolchains.
+Reproducing the hardware artifact requires a Pynq development board (\url{http://www.pynq.io/}) along with a power supply, an 8+GB SD card, and an Ethernet cable to communicate with the host.
+In order to run the example, any x86 machine should do.
+Compiling the hardware requires a machine with at least 4GB of RAM, two cores, and 30GB of disk space for the Xilinx Vivado FPGA toolchains.
 
 \subsubsection{Software dependencies}
 
-Reproducing the examples requires Python, Numpy, MxNet, NNVM (\url{nnvm.tvmlang.org}) and TVM installed. We describe the installation process in the VTA Github repo README files.
+Reproducing the examples requires Python, Numpy, MxNet, NNVM (\url{nnvm.tvmlang.org}) and TVM  (\url{tvm.ai}) installed. We describe the installation process in the VTA Github repo README files.
 
 \subsubsection{Data sets}
 
-We provide cached pre-trained network parameters, and a pre-compiled bitstreams to be downloaded from self-hosted servers. 
+We provide cached pre-trained network parameters, and a pre-compiled bitstreams to be downloaded from self-hosted servers.
 The ImageNet dataset can be accessed on the official website: \url{http://www.image-net.org/}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,11 +282,11 @@ The experimental workflow was ported to utilize CK under \url{https://github.com
 \subsection{Evaluation and expected result}
 We describe the experimental metrics of our artifact below:
 \begin{itemize}
-\item Single batch inference time: 0.42s
-\item Top-1 accuracy: 37\%
-\item Top-5 accuracy: 63\%
-\item Power consumption: peak 2W for SoC
-\item Device cost: \$65 for academics (at the time of the paper submission), \$200 otherwise
+\item Single batch inference time: 0.42s.
+\item Top-1 accuracy: 37\%.
+\item Top-5 accuracy: 63\%.
+\item Power consumption: peak 2W for SoC.
+\item Device cost: \$65 for academics (at the time of the paper submission), \$200 otherwise.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -322,7 +324,7 @@ $ sudo pip install ck
 \subsubsection{CK repository installation}
 
 \begin{verbatim}
-$ ck pull repo:ck-request-asplos18-mobilenets-tvm-arm
+$ ck pull repo:ck-request-asplos18-resnet-tvm-fpga
 \end{verbatim}
 
 \subsubsection{Install this CK workflow from the ACM Digital Library snapshot}
@@ -342,7 +344,7 @@ You can now proceed with further evaluation as described below.
 
 \subsubsection{PYNQ-Z1 FPGA installation (connected via RPC from host)}
 
-Please follow this [getting started guide]() to set up your Pynq board.
+Please follow this getting-started guide (\url{https://github.com/uwsaml/vta/tree/master/apps/pynq_rpc}) to set up your Pynq board.
 
 We used pynq\_z1\_image\_2017\_02\_10.img with 16GB microSD card and Ubuntu 15.04.
 
