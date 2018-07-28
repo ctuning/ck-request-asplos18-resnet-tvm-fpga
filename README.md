@@ -6,7 +6,7 @@ for image classification from the [1st ReQuEST tournament at ASPLOS'18](http://c
 on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs).
 
 Note that after the official release of VTA within TVM in July 2017,
-we have moved main functionality from here to [ck-mxnet](https://github.com/ctuning/ck-mxnet) repository.
+we have moved main functionality from here to [ck-tvm](https://github.com/ctuning/ck-tvm) repository.
 Please, follow this [ReadMe](https://github.com/ctuning/ck-mxnet#using-vta-deep-learning-accelerator-stack-via-ck) for more details.
 
 ## References
@@ -28,7 +28,7 @@ Please, follow this [ReadMe](https://github.com/ctuning/ck-mxnet#using-vta-deep-
 Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
 * **Algorithm:** image classification (Deep Learning, Neural Networks, ResNet-18 inference, 2D convolutions)
-* **Program:** image classification and accuracy validation (MxNet)
+* **Program:** image classification and accuracy validation (TVM/VTA)
 * **Compilation:** NNVM, TVM, GCC and LLVM >=4
 * **Transformations:** TVM Schedule Optimizations, loop splitting, loop reordering, tensorization, virtual threading
 * **Binary:** FPGA bit-stream and RPC server executable
