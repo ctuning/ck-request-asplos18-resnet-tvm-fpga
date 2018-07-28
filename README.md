@@ -5,6 +5,10 @@ as portable, customizable and reusable [Collective Knowledge components](https:/
 for image classification from the [1st ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html) 
 on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs).
 
+Note that after the official release of VTA within TVM in July 2017,
+we have moved main functionality from here to [ck-mxnet](https://github.com/ctuning/ck-mxnet) repository.
+Please, follow this [ReadMe](https://github.com/ctuning/ck-mxnet#using-vta-deep-learning-accelerator-stack-via-ck) for more details.
+
 ## References
 
 * **Title:** VTA: Open Hardware/Software Stack for Vertical Deep Learning System Optimization
@@ -48,7 +52,7 @@ Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
 ## Installation: PYNQ-Z1 FPGA (connected via RPC from host)
 
-Please follow this [getting started guide]() to set up your Pynq board.
+Please follow this [getting started guide](https://docs.tvm.ai/vta/install.html#pynq-board-setup) to set up your Pynq board.
 
 We used pynq_z1_image_2017_02_10.img with 16GB microSD card and Ubuntu 15.04.
 
