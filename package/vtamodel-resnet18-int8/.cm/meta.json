@@ -1,42 +1,42 @@
 {
-  "check_exit_status": "yes", 
+  "check_exit_status": "yes",
   "customize": {
-    "extra_dir": "", 
-    "file_model":"quantize_graph.json",
-    "file_weights":"quantize_model.pkl",
-    "file_vta_bit":"vta.bit",
-    "file_labels":"synset.txt",
+    "extra_dir": "",
+    "file_labels": "synset.txt",
+    "file_model": "quantize_graph.json",
+    "file_vta_bit": "vta.bit",
+    "file_weights": "quantize_model.pkl",
     "install_env": {
-      "PACKAGE_NAME": "vtamodel-resnet18-int8.tar.bz2", 
-      "PACKAGE_NAME1": "vtamodel-resnet18-int8.tar", 
-      "PACKAGE_SKIP_LINUX_MAKE": "YES", 
-      "PACKAGE_UNBZIP": "YES", 
-      "PACKAGE_UNTAR": "YES", 
-      "PACKAGE_URL": "http://cKnowledge.org/ai/data", 
+      "PACKAGE_NAME": "vtamodel-resnet18-int8.tar.bz2",
+      "PACKAGE_NAME1": "vtamodel-resnet18-int8.tar",
+      "PACKAGE_SKIP_LINUX_MAKE": "YES",
+      "PACKAGE_UNBZIP": "YES",
+      "PACKAGE_UNTAR": "YES",
+      "PACKAGE_URL": "http://cKnowledge.org/ai/data",
       "PACKAGE_WGET": "YES",
-      "VTA_MODEL":"quantize_graph.json",
-      "VTA_MODEL_WEIGHTS":"quantize_params.pkl",
-      "VTA_MODEL_LABELS":"synset.txt",
-      "VTA_MODEL_BIT":"vta.bit"
-    }, 
-    "no_os_in_suggested_path": "yes", 
+      "VTA_MODEL": "quantize_graph.json",
+      "VTA_MODEL_BIT": "vta.bit",
+      "VTA_MODEL_LABELS": "synset.txt",
+      "VTA_MODEL_WEIGHTS": "quantize_params.pkl"
+    },
+    "no_os_in_suggested_path": "yes",
     "version": "20180404"
-  }, 
+  },
   "end_full_path_universal": "quantize_params.pkl",
-  "package_extra_name": " (resnet 18, int8, 20180404)", 
-  "process_script": "install", 
-  "soft_uoa": "5cd477e80e72a9dc", 
-  "suggested_path": "vta-model-resnet18-int8", 
+  "package_extra_name": " (resnet 18, int8, 20180404)",
+  "process_script": "install",
+  "soft_uoa": "5cd477e80e72a9dc",
+  "suggested_path": "vta-model-resnet18-int8",
   "tags": [
-    "vtamodel", 
+    "vtamodel",
     "weights",
     "resenet",
     "resnet18",
     "vint8",
     "channel-stable"
-  ], 
+  ],
   "use_scripts_from_another_entry": {
-    "data_uoa": "cd9ccc74060b3d18", 
+    "data_uoa": "cd9ccc74060b3d18",
     "module_uoa": "script"
   }
 }

@@ -1,21 +1,21 @@
 {
-  "auto_detect": "yes", 
+  "auto_detect": "yes",
   "customize": {
-    "check_that_exists": "yes", 
-    "ck_version": 10, 
-    "env_prefix": "CK_ENV_LIB_VTA_SERVER", 
+    "check_that_exists": "yes",
+    "ck_version": 10,
+    "env_prefix": "CK_ENV_LIB_VTA_SERVER",
     "limit_recursion_dir_search": {
-      "linux": 4, 
+      "linux": 4,
       "win": 4
-    }, 
+    },
     "soft_file": {
-      "linux": "libvta.so", 
+      "linux": "libvta.so",
       "win": "libvta.dll"
     }
-  }, 
-  "soft_name": "VTA server", 
+  },
+  "soft_name": "VTA server",
   "tags": [
-    "lib", 
+    "lib",
     "vta-server"
   ]
 }

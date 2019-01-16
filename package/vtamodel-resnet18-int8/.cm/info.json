@@ -1,16 +1,16 @@
 {
-  "backup_data_uid": "345c4a4420d02c60", 
-  "backup_module_uid": "1dc07ee0f4742028", 
-  "backup_module_uoa": "package", 
+  "backup_data_uid": "345c4a4420d02c60",
+  "backup_module_uid": "1dc07ee0f4742028",
+  "backup_module_uoa": "package",
   "control": {
-    "engine": "CK", 
-    "iso_datetime": "2018-04-07T09:45:55.755673", 
+    "engine": "CK",
+    "iso_datetime": "2018-04-07T09:45:55.755673",
     "version": [
-      "1", 
-      "9", 
-      "4", 
+      "1",
+      "9",
+      "4",
       "1"
     ]
-  }, 
+  },
   "data_name": "vtamodel-resnet18-int8"
 }
